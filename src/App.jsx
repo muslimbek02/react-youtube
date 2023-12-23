@@ -6,6 +6,7 @@ import VideoDetails from "./components/VideoDetails";
 import { AppContext } from "./context/contextApi";
 
 const App = () => {
+  
   return (
     <AppContext>
       <BrowserRouter>
@@ -14,7 +15,7 @@ const App = () => {
           <Routes>
             <Route path="/" exact element={<Feed />} />
             <Route
-              path="/searchResult/:searchQuery"
+              path="/search/:searchQuery"
               element={<SearchResult />}
             />
             <Route path="/video/:id" element={<VideoDetails />} />

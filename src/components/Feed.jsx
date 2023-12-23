@@ -4,17 +4,21 @@ import LeftNav from "./LeftNav";
 import VideoCard from "./VideoCard";
 import { fetchingData } from "../utils/api";
 
-
 const Feed = () => {
-  const { loading, searchResults, setLoading, setSearchResults, selectedCategories } = useContext(Context);
+  const {
+    loading,
+    searchResults,
+    setLoading,
+    setSearchResults,
+    selectedCategories,
+  } = useContext(Context);
 
   useEffect(() => {
     document.getElementById("root").classList.remove("custom-h");
 
     const fetchSelectedCategoryData = (query) => {
       setLoading(true);
-      fetchingData(`search?part=snippet&q=${query}`).then(({items}) => {
-        console.log(items);
+      fetchingData(`search?part=snippet&query=${query}`).then(({ items }) => {
         setSearchResults(items);
         setLoading(false);
       });
@@ -29,10 +33,8 @@ const Feed = () => {
       <div className="grow w-[calc(100%-240px)] h-full overflow-y-auto bg-black">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-5">
           {!loading &&
-            searchResults?.map((item) => {
-              return (
-                <VideoCard key={item?.id?.videoId} video={item} />
-              );
+            searchResults?.map((item, idx) => {
+              return <VideoCard key={idx} video={item} />;
             })}
         </div>
       </div>

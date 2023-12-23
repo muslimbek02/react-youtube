@@ -10,7 +10,7 @@ import { Context } from "../context/contextApi";
 import SuggestionVideoCard from "./SuggestionVideoCard";
 
 const VideoDetails = () => {
-  const [video, setVideo] = useState();
+  const [videoDetails, setVideoDeatils] = useState();
   const [relatedVideos, setRelatedVideos] = useState();
   const { id } = useParams();
   const { setLoading } = useContext(Context);
@@ -19,24 +19,26 @@ const VideoDetails = () => {
     document.getElementById("root").classList.add("custom-h");
     fetchVideoDetails();
     fetchRelatedVideos();
-  }, []);
+  }, [id]);
 
   const fetchVideoDetails = () => {
     setLoading(true);
-    fetchingData(`video/details/?id=${id}`).then((res) => {
-      console.log(res);
-      setVideo(res);
-      setLoading(false);
-    });
+    fetchingData(`videos?part=contentDetails,snippet,statistics&id=${id}`).then(
+      ({ items }) => {
+        setVideoDeatils(items[0]);
+        setLoading(false);
+      }
+    );
   };
 
   const fetchRelatedVideos = () => {
     setLoading(true);
-    fetchingData(`video/related-contents/?id=${id}`).then((res) => {
-      console.log(res);
-      setRelatedVideos(res);
-      setLoading(false);
-    });
+    fetchingData(`search?part=snippet,id&relatedToVideoId=${id}`).then(
+      (res) => {
+        setRelatedVideos(res.items);
+        setLoading(false);
+      }
+    );
   };
 
   return (
@@ -50,49 +52,58 @@ const VideoDetails = () => {
               width="100%"
               height="100%"
               style={{ backgroundColor: "#000000" }}
-              playing={true}
             />
           </div>
           <div className="text-white font-bold text-sm md:text-xl mt-4 line-clamp-2">
-            {video?.title}
+            {videoDetails?.snippet?.title}
           </div>
+          {videoDetails?.snippet?.tags && (
+            <div>
+              {videoDetails?.snippet?.tags.map((item, idx) => {
+                return (
+                  <span key={idx} className="text-white/[0.5]">
+                    #{item}
+                  </span>
+                );
+              })}
+            </div>
+          )}
           <div className="flex justify-between flex-col md:flex-row mt-4">
             <div className="flex">
               <div className="flex items-start">
                 <div className="flex h-11 w-11 rounded-full overflow-hidden">
                   <img
                     className="h-full w-full object-cover"
-                    src={video?.author?.avatar[0]?.url}
+                    src={videoDetails?.snippet?.thumbnails?.high?.url}
                   />
                 </div>
               </div>
               <div className="flex flex-col ml-3">
                 <div className="text-white text-md font-semibold flex items-center">
-                  {video?.author?.title}
-                  {video?.author?.badges[0]?.type === "VERIFIED_CHANNEL" && (
-                    <BsFillCheckCircleFill className="text-white/[0.5] text-[12px] ml-1" />
-                  )}
-                </div>
-                <div className="text-white/[0.7] text-sm">
-                  {video?.author?.stats?.subscribersText}
+                  {videoDetails?.snippet?.channelTitle}
+                  <BsFillCheckCircleFill className="text-white/[0.5] text-[12px] ml-1" />
                 </div>
               </div>
             </div>
             <div className="flex text-white mt-4 md:mt-0">
-              <div className="flex items-center justify-center h-11 px-3 rounded-3xl bg-white/[0.15]">
-                <AiOutlineLike className="text-xl text-white mr-2" />
-                {`${abbreviateNumber(video?.stats?.views, 2)} Likes`}
-              </div>
+              {videoDetails?.statistics?.likeCount && (
+                <div className="flex items-center justify-center h-11 px-3 rounded-3xl bg-white/[0.15]">
+                  <AiOutlineLike className="text-xl text-white mr-2" />
+                  {`${videoDetails?.statistics?.likeCount}, Likes`}
+                </div>
+              )}
               <div className="flex items-center justify-center h-11 px-6 rounded-3xl bg-white/[0.15] ml-4">
-                {`${abbreviateNumber(video?.stats?.views, 2)} Views`}
+                {`${abbreviateNumber(
+                  videoDetails?.statistics?.viewCount,
+                  2
+                )}, Views`}
               </div>
             </div>
           </div>
         </div>
         <div className="flex flex-col py-6 px-4 overflow-y-auto lg:w-[350px] xl:w-[400px]">
-          {relatedVideos?.contents?.map((item, index) => {
-            if (item?.type !== "video") return false;
-            return <SuggestionVideoCard key={index} video={item?.video} />;
+          {relatedVideos?.map((item, index) => {
+            return <SuggestionVideoCard key={index} video={item} />;
           })}
         </div>
       </div>

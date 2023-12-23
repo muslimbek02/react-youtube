@@ -51,13 +51,13 @@ const LeftNav = () => {
         })}
         <hr className="my-5 border-white/[0.2]" />
         <div className="text-white/[0.5] text-[12px]">
-          Made with ❤️ by{" "}
+          Made by{" "}
           <Link
-            to="https://geekyprashant.com"
+            to="https://muslimbek.uz"
             target="_blank"
-            className="text-white/[0.6]"
+            className="text-white/[0.7] tracking-widest font-bold"
           >
-            Geeky Prashant
+             Muslimbek
           </Link>
         </div>
       </div>

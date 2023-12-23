@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import moment from "moment";
-import VideoLength from "../shared/videoLength";
 
 const VideoCard = ({ video }) => {
   return (
@@ -12,7 +11,6 @@ const VideoCard = ({ video }) => {
             className="h-full w-full object-cover"
             src={video?.snippet?.thumbnails?.high?.url}
           />
-          {video?.snippet?.publishedAt && <VideoLength time={video?.snippet?.publishedAt} />}
         </div>
         <div className="flex text-white mt-3">
           <div className="flex items-start">
@@ -29,13 +27,15 @@ const VideoCard = ({ video }) => {
             </span>
             <span className="text-[12px] font-semibold mt-2 text-white/[0.7] flex items-center">
               {video?.snippet?.channelTitle}
-                <BsFillCheckCircleFill className="text-white/[0.5] text-[12px] ml-1" />
+              <BsFillCheckCircleFill className="text-white/[0.5] text-[12px] ml-1" />
             </span>
             <div className="flex text-[12px] font-semibold text-white/[0.7] truncate overflow-hidden">
               <span className="flex text-[24px] leading-none font-bold text-white/[0.7] relative top-[-10px] mx-1">
                 .
               </span>
-              <span className="truncate">{moment(video?.snippet?.publishedAt).fromNow()}</span>
+              <span className="truncate">
+                {moment(video?.snippet?.publishedAt).fromNow()}
+              </span>
             </div>
           </div>
         </div>

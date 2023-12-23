@@ -7,7 +7,7 @@ import LeftNav from "./LeftNav";
 import SearchResultVideoCard from "./SearchResultVideoCard";
 
 const SearchResult = () => {
-  const [result, setResult] = useState();
+  const [results, setResults] = useState();
   const { searchQuery } = useParams();
   const { setLoading } = useContext(Context);
 
@@ -18,9 +18,9 @@ const SearchResult = () => {
 
   const fetchSearchResults = () => {
     setLoading(true);
-    fetchingData(`search/?q=${searchQuery}`).then((res) => {
+    fetchingData(`search?part=snippet,id&q=${searchQuery}`).then((res) => {
       console.log(res);
-      setResult(res?.contents);
+      setResults(res?.items);
       setLoading(false);
     });
   };
@@ -30,11 +30,9 @@ const SearchResult = () => {
       <LeftNav />
       <div className="grow w-[calc(100%-240px)] h-full overflow-y-auto bg-black">
         <div className="grid grid-cols-1 gap-2 p-5">
-          {result?.map((item) => {
-            if (item?.type !== "video") return false;
-            let video = item.video;
-            return <SearchResultVideoCard key={video.videoId} video={video} />;
-          })}
+          {results?.map((item) => (
+            <SearchResultVideoCard key={item.id.videoId} video={item} />
+          ))}
         </div>
       </div>
     </div>
